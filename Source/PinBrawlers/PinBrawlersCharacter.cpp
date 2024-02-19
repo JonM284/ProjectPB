@@ -215,13 +215,20 @@ void APinBrawlersCharacter::CheckWackBall()
 		return;
 	}
 
+	//Debug
 	UE_LOG(LogTemp, Log, TEXT("Checking Wack Ball"));
 	
 	DrawDebugSphere(GetWorld(),  wackLocation->GetComponentLocation(), wackRangeRad, 18, FColor::Red, false, 2.0f);
+	
 	FVector lineEnd = wackLocation->GetComponentLocation() + FVector(aimDirection.X, aimDirection.Y, 0) * 100;
+	
 	DrawDebugLine(GetWorld(), wackLocation->GetComponentLocation(), lineEnd, FColor::Green, false, 5.0f);
+	
+	//Sphere Trace
 	FCollisionShape wackSphere = FCollisionShape::MakeSphere(wackRangeRad);
+	
 	FHitResult HitResult;
+
 	if(GetWorld()->SweepSingleByChannel(HitResult, wackLocation->GetComponentLocation(), wackLocation->GetComponentLocation(),
 	 FQuat::Identity, ECC_GameTraceChannel1, wackSphere))
 	{
@@ -251,6 +258,8 @@ void APinBrawlersCharacter::KnockbackPlayer(FVector _knockbackDirection, float _
 {
 	//Check current shields, if shields are depleted => DOUBLE knockback force
 	LaunchCharacter(_knockbackDirection.GetSafeNormal() * _knockbackForce, true, true);
+
+	bIsKnockedBack = true;
 
 	FTimerHandle knockbackTimer;
 	FTimerDelegate knockbackEndDelegate = FTimerDelegate::CreateUObject(this, &APinBrawlersCharacter::KnockbackReset);
