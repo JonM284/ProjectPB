@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "Logging/LogMacros.h"
 #include "PinBrawlersCharacter.generated.h"
 
 class USpringArmComponent;
@@ -20,13 +19,8 @@ class APinBrawlersCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
-	/** Camera boom positioning the camera behind the character */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	USpringArmComponent* CameraBoom;
-
-	/** Follow camera */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	UCameraComponent* FollowCamera;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	class UHealthComponent* healthComponent;
 	
 	/** MappingContext */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
@@ -46,6 +40,9 @@ class APinBrawlersCharacter : public ACharacter
 	UInputAction* WackAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* WackChargeAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* AbilityOneAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
@@ -58,6 +55,11 @@ public:
 	APinBrawlersCharacter();
 	
 	void KnockbackPlayer(FVector _knockbackDirection, float _knockbackForce, float _knockbackTime);
+
+	void OnPlayerDeath();
+
+	UFUNCTION(BlueprintCallable)
+	void OnRevivePlayer();
 
 	bool bIsKnockedBack;
 
@@ -87,7 +89,6 @@ private:
 
 	bool bCanWack = true;
 	
-
 	bool bHasHitBall;
 
 	bool bIsWacking;
@@ -131,6 +132,8 @@ protected:
 	FVector2D movementInput;
 
 	FVector2D aimDirection;
+
+	FTimerHandle knockbackTimer;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = CharacterSpecific)
 	float wackRangeRad = 200.0f;

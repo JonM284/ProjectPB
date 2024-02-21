@@ -13,6 +13,7 @@
 #include "BallBase.h"
 #include "DrawDebugHelpers.h"
 #include "Engine/InputDelegateBinding.h"
+#include "HealthComponent.h"
 
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
@@ -45,6 +46,8 @@ APinBrawlersCharacter::APinBrawlersCharacter()
 
 	wackLocation = CreateDefaultSubobject<USceneComponent>(TEXT("Wack Start Location"));
 	wackLocation->SetupAttachment(RootComponent);
+
+	healthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("Health Component"));
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
@@ -88,6 +91,8 @@ void APinBrawlersCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInp
 
 		//Wack
 		EnhancedInputComponent->BindAction(WackAction, ETriggerEvent::Triggered, this, &APinBrawlersCharacter::WackBall);
+		EnhancedInputComponent->BindAction(WackChargeAction, ETriggerEvent::Triggered, this, &APinBrawlersCharacter::ChargeWackBall);
+
 
 		//Abilities
 		EnhancedInputComponent->BindAction(AbilityOneAction, ETriggerEvent::Triggered, this, &APinBrawlersCharacter::AbilityOne);
@@ -169,10 +174,6 @@ void APinBrawlersCharacter::SecondaryAim(const FInputActionValue& Value)
 		return;
 	}
 
-	if(aimDirection.GetAbs() <= FVector2D(aimDirValueTolerance, aimDirValueTolerance))
-	{
-		aimDirection = Value.Get<FVector2D>();
-	}
 }
 
 void APinBrawlersCharacter::ChargeWackBall(){
@@ -256,30 +257,65 @@ void APinBrawlersCharacter::WackBallReset()
 
 void APinBrawlersCharacter::KnockbackPlayer(FVector _knockbackDirection, float _knockbackForce, float _knockbackTime)
 {
+	//ToDo: add timer, if the ball hits the player, knock them down OR give them invulnerability frames from the ball
+
+	if(healthComponent->bShieldCracked)
+	{
+		_knockbackForce *= 2;
+	}
+
 	//Check current shields, if shields are depleted => DOUBLE knockback force
 	LaunchCharacter(_knockbackDirection.GetSafeNormal() * _knockbackForce, true, true);
 
 	bIsKnockedBack = true;
 
-	FTimerHandle knockbackTimer;
+	//CLEAR timer if they get hit again before the knockback wait timer is over
+	if(GetWorldTimerManager().IsTimerActive(knockbackTimer))
+	{
+		GetWorldTimerManager().ClearTimer(knockbackTimer);
+	}
+	
+	//Set Timer for player to force player to wait till fully finished getting knocked back
 	FTimerDelegate knockbackEndDelegate = FTimerDelegate::CreateUObject(this, &APinBrawlersCharacter::KnockbackReset);
 	GetWorldTimerManager().SetTimer(knockbackTimer, knockbackEndDelegate, _knockbackTime, false);
 }
 
-void APinBrawlersCharacter::KnockbackReset(){
+void APinBrawlersCharacter::KnockbackReset()
+{
 	bIsKnockedBack = false;
 }
 
-void APinBrawlersCharacter::AbilityOne(){
+void APinBrawlersCharacter::AbilityOne()
+{
 	if(bIsKnockedBack){
 		return;
 	}
 	//TBD on other characters
 }
 
-void APinBrawlersCharacter::AbilityTwo(){
+void APinBrawlersCharacter::AbilityTwo()
+{
 	if(bIsKnockedBack){
 		return;
 	}
 	//TBD on other characters
+}
+
+void APinBrawlersCharacter::OnPlayerDeath(){
+	//SFX?
+	
+	//VFX? maybe on gamemode instead of on player?
+
+	//Turn Off Functionality
+	SetActorEnableCollision(false);
+	SetActorHiddenInGame(true);
+    SetActorTickEnabled(false);
+}
+
+void APinBrawlersCharacter::OnRevivePlayer()
+{
+	//reset position before hand?
+	SetActorEnableCollision(true);
+	SetActorHiddenInGame(false);
+    SetActorTickEnabled(true);
 }

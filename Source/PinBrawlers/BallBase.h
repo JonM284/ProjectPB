@@ -38,6 +38,9 @@ protected:
 	float currentMoveSpeed;
 
 	UPROPERTY(EditAnywhere)
+	float maxDamage = 200.0f;
+
+	UPROPERTY(EditAnywhere)
 	float maxMoveSpeed = 100000.0f;
 
 	UPROPERTY(EditAnywhere)

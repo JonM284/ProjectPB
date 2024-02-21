@@ -3,6 +3,7 @@
 
 #include "BallBase.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Kismet/GameplayStatics.h"
 #include "Components/SphereComponent.h"
 #include "Components/ShapeComponent.h"
 #include "PinBrawlersCharacter.h"
@@ -88,16 +89,23 @@ void ABallBase::OnOverlapBegin(UPrimitiveComponent *OverlappedComponent ,AActor*
 	}
 
 	UE_LOG(LogTemp, Log, TEXT(">>> Hit Other Character <<<"));
+
 	APinBrawlersCharacter* brawlerCharacter = Cast<APinBrawlersCharacter>(OtherActor);
 	if(brawlerCharacter)
 	{
-		if(!brawlerCharacter->bIsKnockedBack)
-		{
-			brawlerCharacter->KnockbackPlayer(
-			FVector(OtherActor->GetActorLocation().X - this->GetActorLocation().X, OtherActor->GetActorLocation().Y - this->GetActorLocation().Y, 0), 
-			currentMoveSpeed,
-			0.25f);
-		}
+		AController* instigatorController = lastHitPlayer->GetInstigatorController();
+		UClass* damageTypeClass = UDamageType::StaticClass();
+		
+		//Deal damage as percent of current move speed
+		float prct = currentMoveSpeed / maxMoveSpeed;
+		float currentDamage = maxDamage * prct;
+		UGameplayStatics::ApplyDamage(OtherActor, currentDamage, instigatorController, this, damageTypeClass);
+
+		//knockback player
+		brawlerCharacter->KnockbackPlayer(
+		FVector(OtherActor->GetActorLocation().X - this->GetActorLocation().X, OtherActor->GetActorLocation().Y - this->GetActorLocation().Y, 0), 
+		currentMoveSpeed,
+		0.25f);
 	} 
 
 

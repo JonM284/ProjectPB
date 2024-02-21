@@ -1,15 +1,69 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+// Fill out your copyright notice in the Description page of Project Settings.
+
 
 #include "PinBrawlersGameMode.h"
 #include "PinBrawlersCharacter.h"
-#include "UObject/ConstructorHelpers.h"
+#include "PinBrawlersPlayerController.h"
+#include "CameraBehavior.h"
+#include "Kismet/GameplayStatics.h"
 
-APinBrawlersGameMode::APinBrawlersGameMode()
+
+void APinBrawlersGameMode::PlayerDied(APinBrawlersCharacter* _deadPlayer)
 {
-	// set default pawn class to our Blueprinted character
-	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/ThirdPerson/Blueprints/BP_ThirdPersonCharacter"));
-	if (PlayerPawnBPClass.Class != NULL)
+	deadPlayers.Add(_deadPlayer);
+	playerCount--;
+	_deadPlayer->OnPlayerDeath();
+
+	if(playerCount <= 1)
 	{
-		DefaultPawnClass = PlayerPawnBPClass.Class;
+		UE_LOG(LogTemp, Log, TEXT("------ RESTARTING ROUND -------"));
+		
+	}
+}
+
+void APinBrawlersGameMode::BeginPlay()
+{
+    Super::BeginPlay();
+
+	deadPlayerLocation = GetWorld()->SpawnActor<AActor>(AActor::StaticClass(), FVector(-1000,-1000,-1000), FRotator(0,0,0));
+
+    HandleGameStart();
+}
+
+void APinBrawlersGameMode::HandleGameStart()
+{
+    StartGame();
+    
+	maxPlayerCount = GetPlayerCount();
+    
+	playerCount = maxPlayerCount;
+
+	EnableAllPlayerControllers(false);
+
+	FTimerHandle PlayerEnableTimerHandle;
+    FTimerDelegate timerEndDelegate = FTimerDelegate::CreateUObject(this, &APinBrawlersGameMode::EnableAllPlayerControllers, true);
+    GetWorldTimerManager().SetTimer(PlayerEnableTimerHandle, timerEndDelegate, startDelay, false);
+}
+
+int32 APinBrawlersGameMode::GetPlayerCount(){
+    UGameplayStatics::GetAllActorsOfClass(this, APinBrawlersCharacter::StaticClass(), allPlayers);
+    return allPlayers.Num();
+}
+
+void APinBrawlersGameMode::EnableAllPlayerControllers(bool _bIsEnabled)
+{
+	if(allPlayers.Num() == 0)
+	{
+		return;
+	}
+
+	for (size_t i = 0; i < allPlayers.Num(); i++)
+	{
+		APinBrawlersPlayerController* _currentController = Cast<APinBrawlersPlayerController>(UGameplayStatics::GetPlayerController(this, i));
+
+		if(_currentController != nullptr)
+		{
+			_currentController->SetPlayerEnableState(_bIsEnabled);
+		}
 	}
 }

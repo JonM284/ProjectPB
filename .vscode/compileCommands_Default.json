@@ -32,6 +32,22 @@
 		"directory": "C:\\Program Files\\Epic Games\\UE_5.3\\Engine\\Source"
 	},
 	{
+		"file": "C:\\Users\\JonMG\\Documents\\UnrealEngineProjects\\PinBrawlers\\Source\\PinBrawlers\\HealthComponent.cpp",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\bin\\Hostx64\\x64\\cl.exe",
+			"@C:\\Users\\JonMG\\Documents\\UnrealEngineProjects\\PinBrawlers\\.vscode\\compileCommands_Default\\PinBrawlers.1.rsp"
+		],
+		"directory": "C:\\Program Files\\Epic Games\\UE_5.3\\Engine\\Source"
+	},
+	{
+		"file": "C:\\Users\\JonMG\\Documents\\UnrealEngineProjects\\PinBrawlers\\Source\\PinBrawlers\\HealthComponent.h",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\bin\\Hostx64\\x64\\cl.exe",
+			"@C:\\Users\\JonMG\\Documents\\UnrealEngineProjects\\PinBrawlers\\.vscode\\compileCommands_Default\\PinBrawlers.1.rsp"
+		],
+		"directory": "C:\\Program Files\\Epic Games\\UE_5.3\\Engine\\Source"
+	},
+	{
 		"file": "C:\\Users\\JonMG\\Documents\\UnrealEngineProjects\\PinBrawlers\\Source\\PinBrawlers\\KillWalls.cpp",
 		"arguments": [
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\bin\\Hostx64\\x64\\cl.exe",
@@ -97,6 +113,22 @@
 	},
 	{
 		"file": "C:\\Users\\JonMG\\Documents\\UnrealEngineProjects\\PinBrawlers\\Source\\PinBrawlers\\PinBrawlersGameMode.h",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\bin\\Hostx64\\x64\\cl.exe",
+			"@C:\\Users\\JonMG\\Documents\\UnrealEngineProjects\\PinBrawlers\\.vscode\\compileCommands_Default\\PinBrawlers.1.rsp"
+		],
+		"directory": "C:\\Program Files\\Epic Games\\UE_5.3\\Engine\\Source"
+	},
+	{
+		"file": "C:\\Users\\JonMG\\Documents\\UnrealEngineProjects\\PinBrawlers\\Source\\PinBrawlers\\PinBrawlersPlayerController.cpp",
+		"arguments": [
+			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\bin\\Hostx64\\x64\\cl.exe",
+			"@C:\\Users\\JonMG\\Documents\\UnrealEngineProjects\\PinBrawlers\\.vscode\\compileCommands_Default\\PinBrawlers.1.rsp"
+		],
+		"directory": "C:\\Program Files\\Epic Games\\UE_5.3\\Engine\\Source"
+	},
+	{
+		"file": "C:\\Users\\JonMG\\Documents\\UnrealEngineProjects\\PinBrawlers\\Source\\PinBrawlers\\PinBrawlersPlayerController.h",
 		"arguments": [
 			"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\bin\\Hostx64\\x64\\cl.exe",
 			"@C:\\Users\\JonMG\\Documents\\UnrealEngineProjects\\PinBrawlers\\.vscode\\compileCommands_Default\\PinBrawlers.1.rsp"
